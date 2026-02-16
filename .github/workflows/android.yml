@@ -16,14 +16,16 @@ jobs:
       with:
         python-version: 3.10
 
-    - name: Install dependencies
+    - name: Install system dependencies
       run: |
         sudo apt update
         sudo apt install -y zip unzip openjdk-17-jdk
-        pip install buildozer
-        pip install cython
 
-    - name: Build with Buildozer
+    - name: Install Python dependencies
+      run: |
+        pip install buildozer cython
+
+    - name: Build APK
       run: |
         buildozer android debug
 
@@ -32,3 +34,4 @@ jobs:
       with:
         name: notesapp-apk
         path: bin/*.apk
+
