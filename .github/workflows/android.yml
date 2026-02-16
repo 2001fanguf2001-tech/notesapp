@@ -10,10 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-22.04
 
-    env:
-      ANDROID_SDK_ROOT: ${{ github.workspace }}/android-sdk
-      ANDROID_HOME: ${{ github.workspace }}/android-sdk
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -36,11 +32,13 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython
 
+      - name: Pre-accept Android licenses
+        run: |
+          yes | sdkmanager --licenses || true
+
       - name: Build APK
         run: |
-          buildozer android accept_sdk_license
           buildozer android debug
-
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
