@@ -1,4 +1,4 @@
-name: Test Workflow
+name: Build APK
 
 on:
   push:
@@ -6,8 +6,33 @@ on:
       - main
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Print message
-        run: echo "Workflow works!"
+      - uses: actions/checkout@v3
+
+      - name: Install system packages
+        run: |
+          sudo apt update
+          sudo apt install -y zip unzip openjdk-17-jdk
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Python dependencies
+        run: |
+          pip install --upgrade pip
+          pip install buildozer cython
+
+      - name: Build APK
+        run: buildozer android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: notesapp-apk
+          path: bin/*.apk
+
