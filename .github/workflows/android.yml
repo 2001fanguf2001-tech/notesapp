@@ -42,19 +42,18 @@ jobs:
           unzip commandlinetools-linux-11076708_latest.zip
           rm commandlinetools-linux-11076708_latest.zip
 
-          # Fix nested structure
-          mkdir -p cmdline-tools/latest
-          mv cmdline-tools/cmdline-tools/* cmdline-tools/latest/
-          rm -rf cmdline-tools/cmdline-tools
+          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
 
-          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/bin/sdkmanager --licenses
 
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+          $ANDROID_SDK_ROOT/cmdline-tools/bin/sdkmanager \
+            "platform-tools" \
+            "platforms;android-33" \
+            "build-tools;33.0.2"
 
       - name: Build APK
         run: |
-          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
+          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
           buildozer android debug
 
       - name: Upload APK
@@ -62,4 +61,3 @@ jobs:
         with:
           name: notesapp-apk
           path: bin/*.apk
-
