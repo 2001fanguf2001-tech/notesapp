@@ -45,20 +45,21 @@ jobs:
           unzip commandlinetools-linux-11076708_latest.zip
           rm commandlinetools-linux-11076708_latest.zip
 
-          # Создаём папку latest
           mkdir -p cmdline-tools/latest
-
-          # Перемещаем содержимое внутрь latest
           mv cmdline-tools/* cmdline-tools/latest/ || true
 
-          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
+          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
 
-          yes | sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses
-
+          # Устанавливаем ВСЁ что нужно buildozer
           sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
             "platform-tools" \
             "platforms;android-33" \
-            "build-tools;33.0.2"
+            "build-tools;33.0.2" \
+            "build-tools;37.0.0-rc1"
+
+          # Теперь принимаем лицензии ПОСЛЕ установки
+          yes | sdkmanager --sdk_root=$ANDROID_SDK_ROOT --licenses
+
 
 
       - name: Build APK
